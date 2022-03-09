@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
     EditText syotto;
     EditText teksti;
 
-    //String tiedosto = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +42,15 @@ public class MainActivity extends AppCompatActivity {
         syotto = (EditText) findViewById(R.id.syotto);
         teksti = (EditText) findViewById(R.id.teksti);
         context = MainActivity.this;
-        //System.out.println("KANSION SIJAINTI " + context.getFilesDir());
         EditText edittext = (EditText) findViewById(R.id.syotto);
         edittext.setOnKeyListener(new OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
                     TextView t = findViewById(R.id.syotto);
                     String input = t.getText().toString();
                     Log.d("info", input);
                     text.setText(input);
-                    //tiedosto = input;
                     return true;
                 }
                 return false;
@@ -81,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         String s = syotto.getText().toString();
         System.out.println("s on: " + s);
         try {
-            InputStream ins = context.openFileInput(s); //TODO Tälle arvo!
+            InputStream ins = context.openFileInput(s);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(ins));
             String n = "";
@@ -104,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
             OutputStreamWriter ows = new OutputStreamWriter(context.openFileOutput(s, Context.MODE_PRIVATE));
 
             String n = teksti.getText().toString();
-            //s = "Tämä tulee tiedostoon \n Lue tiedosto jotta näet tämän \n tai sitten et näe mitään";
             ows.write(n);
 
             ows.close();
