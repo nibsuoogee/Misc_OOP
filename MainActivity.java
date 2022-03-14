@@ -1,111 +1,120 @@
-package com.example.olioapp3;
+package com.example.bottledispenserapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
-import android.view.KeyEvent;
-import android.text.TextWatcher;
-import android.view.View.OnKeyListener;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Context  context = null;
-
-    TextView text;
-    TextView kenttaText;
-    EditText syotto;
-    EditText teksti;
+    TextView tulosteet;
+    BottleDispenser machine = null;
+    private TextView seekRaha;
+    private SeekBar seekBar;
+    private TextView saldo;
+    private double lastHinta;
+    private String lastName;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        text = (TextView) findViewById(R.id.textView);
-        kenttaText = (TextView) findViewById(R.id.kirjoitaKentta);
-        syotto = (EditText) findViewById(R.id.syotto);
-        teksti = (EditText) findViewById(R.id.teksti);
         context = MainActivity.this;
-        EditText edittext = (EditText) findViewById(R.id.syotto);
-        edittext.setOnKeyListener(new OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    TextView t = findViewById(R.id.syotto);
-                    String input = t.getText().toString();
-                    Log.d("info", input);
-                    text.setText(input);
-                    return true;
-                }
-                return false;
+        tulosteet = (TextView) findViewById(R.id.tulosteText);
+        seekRaha = (TextView) findViewById(R.id.seekRaha);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        saldo = (TextView) findViewById(R.id.saldo);
+        Spinner spinner = findViewById(R.id.spinner);
+        BottleDispenser machine = BottleDispenser.getInstance();
+        //machine.listBottles(tulosteet);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.spinner_names));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                seekRaha.setText(String.format("+ %,.2f €", progress*0.05));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
-
     }
 
-    public void testFunction (View w) {
-        System.out.println("Hello World!");
-        text.setText("Hello World!");
-    }
-
-    public void handleText (View v) {
-        TextView t = findViewById(R.id.syotto);
-        String input = t.getText().toString();
-        Log.d("info", input);
-        text.setText(input);
-    }
-
-    public void readFile(View v) {
-        String s = syotto.getText().toString();
-        System.out.println("s on: " + s);
-        try {
-            InputStream ins = context.openFileInput(s);
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(ins));
-            String n = "";
-
-            while ((n = br.readLine()) != null) {
-                System.out.println(n);
-                teksti.setText(n);
-            }
-            ins.close();
-        } catch (IOException e) {
-            Log.e("IOException", "Virhe syötteessä");
-        } finally {
-            System.out.println("LUETTU");
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        BottleDispenser machine = BottleDispenser.getInstance();
+        String text = adapterView.getItemAtPosition(i).toString();
+        String[] name = text.split(" [0|1].5l$");
+        String[] size = text.split("^[a-zA-Z -]*");
+        String[] size2 = size[1].split("l$");
+        int ostotapahtuma = machine.getBottle(name[0], Double.parseDouble(size2[0]));
+        if (ostotapahtuma == 1) {
+            tulosteet.setText("Ostettu! \n" + tulosteet.getText().toString());
+        } else if (ostotapahtuma == 2) {
+            tulosteet.setText("Lisää rahaa ensin. \n" + tulosteet.getText().toString());
+        } else {
+            tulosteet.setText("Tuotetta ei saatavilla. \n" + tulosteet.getText().toString());
         }
+        saldo.setText(String.format("SALDO: %,.2f €", machine.getMoney()));
     }
 
-    public void writeFile(View v) {
-        String s = syotto.getText().toString();
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    public void addMoney (View w) {
+        BottleDispenser machine = BottleDispenser.getInstance();
+        machine.addMoney(tulosteet, seekBar.getProgress());
+        saldo.setText(String.format("SALDO: %,.2f €", machine.getMoney()));
+    }
+
+    public void kuitti (View w) {
+
+        BottleDispenser machine = BottleDispenser.getInstance();
+        String s = "";
         try {
-            OutputStreamWriter ows = new OutputStreamWriter(context.openFileOutput(s, Context.MODE_PRIVATE));
-
-            String n = teksti.getText().toString();
-            ows.write(n);
-
+            OutputStreamWriter ows = new OutputStreamWriter(context.openFileOutput("kuitti.txt", Context.MODE_PRIVATE));
+            ows.write("--- Kuitti ---\n");
+            ows.write(machine.lastPurchase());
             ows.close();
 
         } catch (IOException e) {
             Log.e("IOException", "Virhe syötteessä");
         } finally {
-            System.out.println("KIRJOITETTU");
+            tulosteet.setText("Kuitti tulostettu \n" + tulosteet.getText().toString());
         }
+
     }
+
+    public void returnMoney(View w) {
+        BottleDispenser machine = BottleDispenser.getInstance();
+        machine.returnMoney(tulosteet);
+        saldo.setText(String.format("SALDO: %,.2f €", 0.00));
+    }
+
+
 }
