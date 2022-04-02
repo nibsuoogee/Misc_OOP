@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textViewKirj"
+        android:layout_width="299dp"
+        android:layout_height="116dp"
+        android:text="@string/text_here"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.26999998" />
+
+    <SurfaceView
+        android:id="@+id/surfaceView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#ECE1FF"
+        android:translationZ="-5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewKirj"
+        app:layout_constraintEnd_toEndOf="@+id/textViewKirj"
+        app:layout_constraintStart_toStartOf="@+id/textViewKirj"
+        app:layout_constraintTop_toTopOf="@+id/textViewKirj" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="68dp"
+        android:layout_height="59dp"
+        android:duplicateParentState="false"
+        android:editable="false"
+        android:onClick="sendValueToFragment"
+        android:translationZ="-20dp"
+        app:icon="@android:drawable/ic_menu_manage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.895"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="405dp"
+        android:layout_height="160dp"
+        android:ems="10"
+        android:inputType="textLongMessage|textMultiLine|textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.916"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.841" />
+
+    <SurfaceView
+        android:id="@+id/surfaceView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#E5D6FF"
+        android:translationZ="-5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/editText"
+        app:layout_constraintEnd_toEndOf="@+id/editText"
+        app:layout_constraintStart_toStartOf="@+id/editText"
+        app:layout_constraintTop_toTopOf="@+id/editText" />
+
+    <FrameLayout
+        android:id="@+id/fragmentWindow"
+        android:layout_width="288dp"
+        android:layout_height="733dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.022"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6">
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/textViewDisplay"
+        android:layout_width="169dp"
+        android:layout_height="35dp"
+        android:text="@string/display_text"
+        android:textSize="24sp"
+        android:translationZ="-10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="2"
+        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintTop_toTopOf="@+id/button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

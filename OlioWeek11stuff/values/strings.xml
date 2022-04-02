@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OlioWeek11</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="display_text">Display Text</string>
+    <string name="the_display_text">Display Text</string>
+    <string name="text_here">Text appears here</string>
+    <string name="back">BACK</string>
+    <string name="settings">Settings</string>
+    <string name="input_lock">Lock input field</string>
+    <string name="font_size">Font size</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+    <string name="lines">Lines</string>
+    <string name="language">Language</string>
+    <string-array name="spinner_names">
+        <item>"language"</item>
+        <item>"englanti"</item>
+        <item>"suomi"</item>
+        <item>"ruotsi"</item>
+    </string-array>
+</resources>
